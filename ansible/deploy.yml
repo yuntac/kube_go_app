@@ -1,0 +1,10 @@
+---
+
+- import_playbook: docker.yml
+  tags: docker
+
+- import_playbook: minikube.yml
+  tags: minikube
+
+- import_playbook: helm.yml
+  tags: helm

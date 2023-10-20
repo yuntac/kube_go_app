@@ -1,0 +1,10 @@
+---
+
+docker_gpg_path: "/etc/apt/keyrings/docker.gpg"
+docker_dependencies_packages:
+  - ca-certificates
+  - curl
+  - gnupg
+
+docker_packages:
+  - docker-ce

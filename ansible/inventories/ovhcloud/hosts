@@ -1,0 +1,3 @@
+[kube]
+
+debian ansible_ssh_host=172.25.61.146

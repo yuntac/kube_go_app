@@ -1,0 +1,32 @@
+---
+# TODO: à tranformer en role
+# doc : https://minikube.sigs.k8s.io/docs/start/
+- hosts: kube
+  tasks:
+    # TODO: remove file after installation and add when condition on download
+    - name: "Get minikube package"
+      ansible.builtin.get_url:
+        url: "https://storage.googleapis.com/minikube/releases/latest/{{ minikube_packages_name }}"
+        dest: "{{ minikube_package_tmp_location }}"
+
+    - name: "Install minikube"
+      become: true
+      ansible.builtin.apt:
+        deb: "/{{ minikube_package_tmp_location }}"
+        state: present
+
+    # TODO idempotence, systemd ?
+    - name: "Start minikube"
+      ansible.builtin.shell:
+        cmd: "minikube start --driver=docker"
+
+    # TODO: idempotence ?
+    - name: "Install kubectl"
+      ansible.builtin.command:
+        cmd: "minikube kubectl -- get po -A"
+
+    - name: "Add alias kubectl"
+      ansible.builtin.lineinfile:
+        path: "~/.bashrc"
+        regexp: "alias kubectl="
+        line: 'alias kubectl="minikube kubectl --"'

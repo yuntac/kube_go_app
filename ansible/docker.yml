@@ -1,0 +1,44 @@
+---
+# TODO: a tranformer en role
+# doc : https://docs.docker.com/engine/install/debian/#install-using-the-repository
+- hosts: kube
+  become: true
+  tasks:
+    - name: "Docker dependencies"
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop: "{{ docker_dependencies_packages }}"
+
+    - name: "Add Apt signing key"
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        keyring: "{{ docker_gpg_path }}"
+        state: present
+
+    - name: "Add docker repository"
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by={{ docker_gpg_path }}] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+        state: present
+
+    - name: "Docker installation"
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop: "{{ docker_packages }}"
+
+    - name: "Add debian user to docker group"
+      ansible.builtin.user:
+        name: "debian"
+        shell: /bin/bash
+        groups: docker
+        append: true
+      register: _docker_group
+
+    - name: "Start daemon"
+      service:
+        name: "docker"
+        state: started
+        enabled: true

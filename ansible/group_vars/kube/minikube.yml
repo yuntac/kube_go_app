@@ -1,0 +1,4 @@
+---
+
+minikube_packages_name: "minikube_latest_amd64.deb"
+minikube_package_tmp_location: "/tmp/{{ minikube_packages_name }}"
