@@ -31,3 +31,17 @@
         dest: "/opt/helm-charts"
         owner: debian
         group: debian
+
+    - name: "Install chart"
+      become: false
+      command:
+        cmd: "helm install test sre-hiring"
+        chdir: "/opt/helm-charts"
+      when: helm_install | bool | default(false)
+
+    - name: "Upgrade chart"
+      become: false
+      command:
+        cmd: "helm upgrade test sre-hiring"
+        chdir: "/opt/helm-charts"
+      when: helm_upgrade | bool | default(true)
